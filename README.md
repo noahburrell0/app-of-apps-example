@@ -1,5 +1,6 @@
-# golist
-Deployment Repository for the golist Application.
+# App of Apps Example
+
+Deployment Repository to demo App of Apps with Syncwaves
 
 # Health Checks
 
@@ -15,7 +16,7 @@ kubectl patch cm/argocd-cm -n argocd --type=merge \
 Now you can apply your App-of-Apps
 
 ```shell
-kubectl apply -f golist-app-of-apps.yaml
+kubectl apply -f https://raw.githubusercontent.com/christianh814/app-of-apps-example/main/app-of-apps-with-syncwaves.yaml
 ```
 
 # Troubleshooting
