@@ -42,3 +42,9 @@ If you're doing ProgressiveSyncs, you first need to enable it.
 kubectl patch -n argocd --type json cm/argocd-cmd-params-cm \
 -p='[{"op": "replace", "path": "/data/applicationsetcontroller.enable.progressive.syncs", "value":"true"}]'
 ```
+
+Then you can apply the AppSet
+
+```shell
+kubectl apply -f https://raw.githubusercontent.com/christianh814/app-of-apps-example/main/progressivesync.yaml
+```
