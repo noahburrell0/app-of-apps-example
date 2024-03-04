@@ -34,3 +34,11 @@ kubectl rollout status deploy argocd-applicationset-controller -n argocd
 kubectl rollout status deploy argocd-server -n argocd
 ```
 
+# Progressive Syncs
+
+If you're doing ProgressiveSyncs, you first need to enable it.
+
+```shell
+kubectl patch -n argocd --type json cm/argocd-cmd-params-cm \
+-p='[{"op": "replace", "path": "/data/applicationsetcontroller.enable.progressive.syncs", "value":"true"}]'
+```
