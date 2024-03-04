@@ -1,47 +1,51 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
-  name: pricelist
+  name: golist
   namespace: argocd
 spec:
   generators:
   - list:
       elements:
-      - srv: config
-        path: applicationsets/progressivesync/apps/pricelist-config
-      - srv: db
-        path: applicationsets/progressivesync/apps/pricelist-db
+      - srv: database
+        path: apps/golist-db/
+      - srv: backend
+        path: apps/golist-api/
       - srv: frontend
-        path: applicationsets/progressivesync/apps/pricelist-frontend
+        path: apps/golist-frontend/
   strategy:
     type: RollingSync
     rollingSync:
       steps:
         - matchExpressions:
-            - key: pricelist-component # the "key" is based on the label (below as "pricelist-component: {{srv}}")
+            - key: golist-component
               operator: In
               values:
-                - config
-          #maxUpdate: 100%  # if undefined, all applications matched are updated together (default is 100%)
+                - database
         - matchExpressions:
-            - key: pricelist-component
+            - key: golist-component
               operator: In
               values:
-                - db
-          #maxUpdate: 0      # if 0, no matched applications will be updated
+                - backend
         - matchExpressions:
-            - key: pricelist-component
+            - key: golist-component
               operator: In
               values:
                 - frontend
-          #maxUpdate: 10%    # all application matched are rollout no more than the percentage indicates
   template:
     metadata:
-      name: 'pricelist-{{srv}}'
+      name: '{{srv}}'
       labels:
-        pricelist-component: '{{srv}}'
+        golist-component: '{{srv}}'
     spec:
       project: default
+      source:
+        repoURL: 'https://github.com/christianh814/app-of-apps-example'
+        targetRevision: main
+        path: '{{path}}'
+      destination:
+        name: in-cluster
+        namespace: golist
       syncPolicy:
         automated:
           prune: true
@@ -52,10 +56,5 @@ spec:
             duration: 5s
             maxDuration: 3m0s
             factor: 2
-      source:
-        repoURL: https://github.com/christianh814/gitops-examples
-        targetRevision: main
-        path: '{{path}}'
-      destination:
-        server: https://kubernetes.default.svc
-        namespace: pricelist
+        syncOptions:
+          - CreateNamespace=true
