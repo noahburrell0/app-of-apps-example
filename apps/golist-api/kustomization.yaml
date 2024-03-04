@@ -3,18 +3,17 @@ kind: Kustomization
 
 namespace: golist
 
-bases:
-- github.com/christianh814/golist-api/deploy
 
 resources:
 - golist-api-ingress.yaml
+- github.com/christianh814/golist-api/deploy
 
-patchesJson6902:
-  - target:
-      version: v1
-      kind: ConfigMap
-      name: golist-api-config
-    patch: |-
-      - op: replace
-        path: /data/config.json
-        value: '{"connection_string":"golist:golist@tcp(database-mariadb:3306)/golist","port":8080}'
+patches:
+- patch: |-
+    - op: replace
+      path: /data/config.json
+      value: '{"connection_string":"golist:golist@tcp(database-mariadb:3306)/golist","port":8080}'
+  target:
+    kind: ConfigMap
+    name: golist-api-config
+    version: v1
